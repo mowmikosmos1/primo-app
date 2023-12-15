@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import logo from "./logo.svg";
 import "./App.css";
+import { OrdersList } from "./OrdersList";
 
 export type OrderType = {
   id: string;
@@ -106,17 +107,13 @@ const sampleOrders: OrderType[] = [
 ];
 
 function App() {
-  const [orders, setOrders] = useState<OrderType[]>([]);
+  // sample orders są przekazane jako default
+  // moglibyśmy tez napisać [], jesli lista miałaby być pusta   useState<OrderType[]>([]);
+  const [orders, setOrders] = useState<OrderType[]>(sampleOrders);
   return (
     <div className="App">
-      {/* <ul>{orders.map(order) => {
-        <li>
-          <div>
-            {order.orderNumber}
-            {order.clientName}
-          </div>
-        </li>
-      } }</ul> */}
+      {/* dodanie komponentu Orders list z parametrem orders */}
+      <OrdersList orders={orders}></OrdersList>
     </div>
   );
 }

@@ -19,7 +19,8 @@ export type orderType = {
   size: number;
 };
 
-const OrdersList = ({ orders }: { orders: OrderType[] }) => {
+// orders jest parametrem który przekazujemy do OrdersList np: <OrdersList orders={lista} />
+export const OrdersList = ({ orders }: { orders: OrderType[] }) => {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
