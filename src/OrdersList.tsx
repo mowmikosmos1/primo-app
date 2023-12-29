@@ -51,7 +51,9 @@ export const OrdersList = ({ orders }: { orders: OrderType[] }) => {
               <TableCell align="right">
                 {order.endDate.toDateString()}
               </TableCell>
-              <TableCell align="right">{order.isFinished}</TableCell>
+              <TableCell align="center">
+                {order.isFinished ? "tak" : "nie"}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

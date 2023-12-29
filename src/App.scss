@@ -1,0 +1,17 @@
+.container {
+  display: flex;
+
+  .buttons {
+    flex: 1 1 0;
+    padding: 20px;
+
+    
+  }
+  .tables {
+    flex: 3 1 0;
+    padding: 25px 25px 25px 0px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+  }
+}

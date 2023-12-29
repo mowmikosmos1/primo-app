@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import logo from "./logo.svg";
-import "./App.css";
+import "./App.scss";
 import { OrdersList } from "./OrdersList";
+import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
 
 export type OrderType = {
   id: string;
@@ -12,6 +14,36 @@ export type OrderType = {
   isFinished: boolean;
   size: number;
 };
+
+const urgentOrders: OrderType[] = [
+  {
+    id: "1",
+    clientName: "Alice",
+    orderNumber: 101,
+    startDate: new Date("2023-01-01"),
+    endDate: new Date("2023-01-10"),
+    isFinished: false,
+    size: 5,
+  },
+  {
+    id: "2",
+    clientName: "Bob",
+    orderNumber: 102,
+    startDate: new Date("2023-02-01"),
+    endDate: new Date("2023-02-10"),
+    isFinished: true,
+    size: 3,
+  },
+  {
+    id: "3",
+    clientName: "Charlie",
+    orderNumber: 103,
+    startDate: new Date("2023-03-01"),
+    endDate: new Date("2023-03-10"),
+    isFinished: false,
+    size: 4,
+  },
+];
 
 const sampleOrders: OrderType[] = [
   {
@@ -112,8 +144,23 @@ function App() {
   const [orders, setOrders] = useState<OrderType[]>(sampleOrders);
   return (
     <div className="App">
+      <header>Logo </header>
+      <main className="container">
+        <div className="buttons">
+          <Stack spacing={2} direction="column">
+            <Button variant="contained">Dodaj zlecenie</Button>
+            <Button variant="contained">Pilne</Button>
+            <Button variant="contained">Wszystkie zlecenia</Button>
+            <Button variant="contained">Historia</Button>
+          </Stack>
+        </div>
+
+        <div className="tables">
+          <OrdersList orders={urgentOrders}></OrdersList>
+          <OrdersList orders={orders}></OrdersList>
+        </div>
+      </main>
       {/* dodanie komponentu Orders list z parametrem orders */}
-      <OrdersList orders={orders}></OrdersList>
     </div>
   );
 }
