@@ -31,6 +31,7 @@ export const OrdersList = ({ orders }: { orders: OrderType[] }) => {
             <TableCell align="right">metry2</TableCell>
             <TableCell align="right">Przyjęte zlecenie: </TableCell>
             <TableCell align="right">Data wydania : </TableCell>
+            <TableCell align="center">Czy wydane : </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -50,6 +51,7 @@ export const OrdersList = ({ orders }: { orders: OrderType[] }) => {
               <TableCell align="right">
                 {order.endDate.toDateString()}
               </TableCell>
+              <TableCell align="right">{order.isFinished}</TableCell>
             </TableRow>
           ))}
         </TableBody>
