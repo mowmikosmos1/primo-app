@@ -1,5 +1,23 @@
+header {
+  display: flex;
+  height: 150px;
+  justify-content: space-around;
+  padding-top: 20px;
+
+}
+.logo {
+  height: 100px;
+  width: 100px;
+}
+img {
+  height: 100px;
+  width: 100px;
+}
+
 .container {
   display: flex;
+
+
 
   .buttons {
     flex: 1 1 0;

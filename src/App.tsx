@@ -138,26 +138,57 @@ const sampleOrders: OrderType[] = [
   },
 ];
 
+type currentPageType = "start" | "urgent" | "all" | "add";
+
 function App() {
   // sample orders są przekazane jako default
   // moglibyśmy tez napisać [], jesli lista miałaby być pusta   useState<OrderType[]>([]);
   const [orders, setOrders] = useState<OrderType[]>(sampleOrders);
+  const [currentPage, setCurrentPage] = useState<currentPageType>("start");
   return (
     <div className="App">
-      <header>Logo </header>
+      <header>
+        <div className="logo">
+          <img src="./primo-logo1.jpg" alt="logo"></img>
+        </div>
+
+        <div className="UserPanel">Zalogowano : admin</div>
+        <div className="LogOut">
+          <Button variant="contained">Wyloguj</Button>
+        </div>
+        <div id="dateDisplay">Data : </div>
+        <div id="timeDisplay">Czas : </div>
+      </header>
+
       <main className="container">
         <div className="buttons">
           <Stack spacing={2} direction="column">
-            <Button variant="contained">Dodaj zlecenie</Button>
+            <Button
+              onClick={() => {
+                setCurrentPage("add");
+              }}
+              variant="contained"
+            >
+              Dodaj zlecenie
+            </Button>
             <Button variant="contained">Pilne</Button>
-            <Button variant="contained">Wszystkie zlecenia</Button>
+            <Button
+              onClick={() => {
+                setCurrentPage("all");
+              }}
+              variant="contained"
+            >
+              Wszystkie zlecenia
+            </Button>
             <Button variant="contained">Historia</Button>
           </Stack>
         </div>
 
         <div className="tables">
+          {currentPage}
           <OrdersList orders={urgentOrders}></OrdersList>
-          <OrdersList orders={orders}></OrdersList>
+          {currentPage === "all" && <OrdersList orders={orders}></OrdersList>}
+          {currentPage === "add" && <div>Dodaj nowe zlecenie</div>}
         </div>
       </main>
       {/* dodanie komponentu Orders list z parametrem orders */}
