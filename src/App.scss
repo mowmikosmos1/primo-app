@@ -1,12 +1,17 @@
+body{
+  background-color: darkgray;
+}
 header {
   display: flex;
   justify-content: space-around;
   padding-top: 20px;
+  
 
 }
 header .logo img {
-  height: 100px;
   width: 100px;
+  border-radius: 100px;
+  
 }
 
 .container {
@@ -17,16 +22,25 @@ header .logo img {
   .buttons {
     flex: 1 1 0;
     padding: 20px;
-    color:white;
+    color: rgb(54, 121, 244);
+    
   
-    #importantInfo {
-      background-color: rgb(54, 121, 244);
-      height: 500px;
+    .importantInfo {
+      
+      border-color:  rgb(54, 121, 244);
+      background-color: white;
       border-radius: 5px;
-      box-shadow:1px 1px 1px;
       text-align: center;
       padding-top: 5px;
+      box-shadow: 0 0 2px 2px;
       
+      .insideBox{
+        padding: 10px 0px 0px 10px ;
+        border-radius: 5px;
+        background-color: white;
+
+      }
+
     }
   }
   
