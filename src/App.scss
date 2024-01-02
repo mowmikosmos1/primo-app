@@ -1,15 +1,10 @@
 header {
   display: flex;
-  height: 150px;
   justify-content: space-around;
   padding-top: 20px;
 
 }
-.logo {
-  height: 100px;
-  width: 100px;
-}
-img {
+header .logo img {
   height: 100px;
   width: 100px;
 }
@@ -22,9 +17,20 @@ img {
   .buttons {
     flex: 1 1 0;
     padding: 20px;
-
-    
+    color:white;
+  
+    #importantInfo {
+      background-color: rgb(54, 121, 244);
+      height: 500px;
+      border-radius: 5px;
+      box-shadow:1px 1px 1px;
+      text-align: center;
+      padding-top: 5px;
+      
+    }
   }
+  
+
   .tables {
     flex: 3 1 0;
     padding: 25px 25px 25px 0px;
@@ -33,3 +39,4 @@ img {
     row-gap: 20px;
   }
 }
+

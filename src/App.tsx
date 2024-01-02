@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import logo from "./logo.svg";
 import "./App.scss";
 import { OrdersList } from "./OrdersList";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
+import logo from "./primologo1.jpg";
 
 export type OrderType = {
   id: string;
@@ -138,7 +138,7 @@ const sampleOrders: OrderType[] = [
   },
 ];
 
-type currentPageType = "start" | "urgent" | "all" | "add";
+type currentPageType = "start" | "urgent" | "all" | "add" | "add-info";
 
 function App() {
   // sample orders są przekazane jako default
@@ -149,7 +149,7 @@ function App() {
     <div className="App">
       <header>
         <div className="logo">
-          <img src="./primo-logo1.jpg" alt="logo"></img>
+          <img src={logo} alt="logo1" />
         </div>
 
         <div className="UserPanel">Zalogowano : admin</div>
@@ -165,13 +165,28 @@ function App() {
           <Stack spacing={2} direction="column">
             <Button
               onClick={() => {
+                setCurrentPage("start");
+              }}
+              variant="contained"
+            >
+              Strona Główna
+            </Button>
+            <Button
+              onClick={() => {
                 setCurrentPage("add");
               }}
               variant="contained"
             >
               Dodaj zlecenie
             </Button>
-            <Button variant="contained">Pilne</Button>
+            <Button
+              onClick={() => {
+                setCurrentPage("urgent");
+              }}
+              variant="contained"
+            >
+              Pilne
+            </Button>
             <Button
               onClick={() => {
                 setCurrentPage("all");
@@ -180,7 +195,19 @@ function App() {
             >
               Wszystkie zlecenia
             </Button>
-            <Button variant="contained">Historia</Button>
+
+            <Button
+              onClick={() => {
+                setCurrentPage("add-info");
+              }}
+              variant="contained"
+            >
+              Dodaj informacje
+            </Button>
+            <div id="importantInfo">
+              Informacje
+              <div className="insideBox"></div>
+            </div>
           </Stack>
         </div>
 
