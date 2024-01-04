@@ -4,6 +4,7 @@ import { OrdersList } from "./OrdersList";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import logo from "./primologo1.jpg";
+import { InboxList } from "./InboxList";
 
 export type OrderType = {
   id: string;
@@ -138,6 +139,20 @@ const sampleOrders: OrderType[] = [
   },
 ];
 
+const inboxMailTitles: string[] = [
+  "Welcome to Our Team!",
+  "Monthly Company Performance Report",
+  "Invitation: Annual General Meeting",
+  "Reminder: Upcoming Team Building Event",
+  "New Policy Implementation Notice",
+  "Weekly Team Progress Update",
+  "Staff Satisfaction Survey",
+  "Urgent: IT System Maintenance Notification",
+  "Quarterly Financial Summary",
+  "Holiday Schedule and Office Hours",
+  "Project XYZ: Milestone Achievements",
+];
+
 type currentPageType = "start" | "urgent" | "all" | "add" | "add-info";
 
 function App() {
@@ -156,7 +171,7 @@ function App() {
         <div className="LogOut">
           <Button variant="contained">Wyloguj</Button>
         </div>
-        <div id="dateDisplay">Data : </div>
+        <div id="dateDisplay">Data :</div>
         <div id="timeDisplay">Czas : </div>
       </header>
 
@@ -204,20 +219,24 @@ function App() {
             >
               Dodaj informacje
             </Button>
-            <div id="importantInfo">
-              Informacje
-              <div className="insideBox"></div>
+            <div className="importantInfo">
+              <b>I N F O R M A C J E</b>
+              <div className="insideBox">
+                <InboxList infoList={inboxMailTitles}></InboxList>
+              </div>
             </div>
           </Stack>
         </div>
 
         <div className="tables">
           {currentPage}
-          <OrdersList orders={urgentOrders}></OrdersList>
-          {currentPage === "all" && <OrdersList orders={orders}></OrdersList>}
+          <OrdersList orders={urgentOrders} />
+          {currentPage === "all" && <OrdersList orders={orders} />}
           {currentPage === "add" && <div>Dodaj nowe zlecenie</div>}
+          {currentPage === "add-info" && <div>Dodaj nowa informacje</div>}
         </div>
       </main>
+
       {/* dodanie komponentu Orders list z parametrem orders */}
     </div>
   );

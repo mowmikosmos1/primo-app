@@ -11,6 +11,8 @@ header {
 header .logo img {
   width: 100px;
   border-radius: 100px;
+  display: flex;
+  justify-content: center;
   
 }
 
@@ -51,6 +53,7 @@ header .logo img {
     display: flex;
     flex-direction: column;
     row-gap: 20px;
+    
   }
 }
 
