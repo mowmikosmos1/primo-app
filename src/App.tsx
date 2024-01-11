@@ -5,6 +5,8 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import logo from "./primologo1.jpg";
 import { InboxList } from "./InboxList";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { teal } from "@mui/material/colors";
 
 export type OrderType = {
   id: string;
@@ -153,6 +155,13 @@ const inboxMailTitles: string[] = [
   "Project XYZ: Milestone Achievements",
 ];
 
+const theme = createTheme({
+  palette: {
+    primary: teal,
+    secondary: teal,
+  },
+});
+
 type currentPageType = "start" | "urgent" | "all" | "add" | "add-info";
 
 function App() {
@@ -169,72 +178,85 @@ function App() {
 
         <div className="UserPanel">Zalogowano : admin</div>
         <div className="LogOut">
-          <Button variant="contained">Wyloguj</Button>
+          <ThemeProvider theme={theme}>
+            <Button variant="contained" color="primary">
+              Wyloguj
+            </Button>
+          </ThemeProvider>
         </div>
+
         <div id="dateDisplay">Data :</div>
         <div id="timeDisplay">Czas : </div>
       </header>
 
       <main className="container">
-        <div className="buttons">
-          <Stack spacing={2} direction="column">
-            <Button
-              onClick={() => {
-                setCurrentPage("start");
-              }}
-              variant="contained"
-            >
-              Strona Główna
-            </Button>
-            <Button
-              onClick={() => {
-                setCurrentPage("add");
-              }}
-              variant="contained"
-            >
-              Dodaj zlecenie
-            </Button>
-            <Button
-              onClick={() => {
-                setCurrentPage("urgent");
-              }}
-              variant="contained"
-            >
-              Pilne
-            </Button>
-            <Button
-              onClick={() => {
-                setCurrentPage("all");
-              }}
-              variant="contained"
-            >
-              Wszystkie zlecenia
-            </Button>
+        <ThemeProvider theme={theme}>
+          <div className="buttons">
+            <Stack spacing={2} direction="column">
+              <Button
+                onClick={() => {
+                  setCurrentPage("start");
+                }}
+                variant="contained"
+                color="primary"
+              >
+                Strona Główna
+              </Button>
+              <Button
+                onClick={() => {
+                  setCurrentPage("add");
+                }}
+                variant="contained"
+                color="primary"
+              >
+                Dodaj zlecenie
+              </Button>
+              <Button
+                onClick={() => {
+                  setCurrentPage("urgent");
+                }}
+                variant="contained"
+                color="primary"
+              >
+                Pilne
+              </Button>
+              <Button
+                onClick={() => {
+                  setCurrentPage("all");
+                }}
+                variant="contained"
+                color="primary"
+              >
+                Wszystkie zlecenia
+              </Button>
 
-            <Button
-              onClick={() => {
-                setCurrentPage("add-info");
-              }}
-              variant="contained"
-            >
-              Dodaj informacje
-            </Button>
-            <div className="importantInfo">
-              <b>I N F O R M A C J E</b>
-              <div className="insideBox">
-                <InboxList infoList={inboxMailTitles}></InboxList>
+              <Button
+                onClick={() => {
+                  setCurrentPage("add-info");
+                }}
+                variant="contained"
+                color="primary"
+              >
+                Dodaj informacje
+              </Button>
+
+              <div className="importantInfo">
+                <b>I N F O R M A C J E</b>
+                <div className="insideBox">
+                  <InboxList infoList={inboxMailTitles}></InboxList>
+                </div>
               </div>
-            </div>
-          </Stack>
-        </div>
+            </Stack>
+          </div>
 
-        <div className="tables">
-          {currentPage}
-          <OrdersList orders={urgentOrders} />
-          {currentPage === "all" && <OrdersList orders={orders} />}
-          {currentPage === "add" && <div>Dodaj nowe zlecenie</div>}
-          {currentPage === "add-info" && <div>Dodaj nowa informacje</div>}
-        </div>
+          <div className="tables">
+            {currentPage}
+            <OrdersList orders={urgentOrders} />
+            {currentPage === "all" && <OrdersList orders={orders} />}
+            {currentPage === "add" && <div>Dodaj nowe zlecenie</div>}
+            {currentPage === "add-info" && <div>Dodaj nowa informacje</div>}
+          </div>
+        </ThemeProvider>
       </main>
 
       {/* dodanie komponentu Orders list z parametrem orders */}
