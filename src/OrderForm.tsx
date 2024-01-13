@@ -60,12 +60,14 @@ export const OrderForm = () => {
 
   return (
     <Box>
-      <Typography>Nowe zlecenie</Typography>
-      <p>Klient: {order.clientName}</p>
+      <Typography>
+        <b>Nowe zlecenie</b>
+      </Typography>
       <p>Numer: {order.orderNumber}</p>
-      <p>Size: {order.size}</p>
-      <p>Start: {order.startDate?.toString()}</p>
-      <p>End: {order.endDate?.toString()}</p>
+      <p>Klient: {order.clientName}</p>
+      <p>Metry/powierzchnia: {order.size}</p>
+      <p>Przyjęto: {order.startDate?.toString()}</p>
+      <p>Wydać dnia: {order.endDate?.toString()}</p>
       <TextField
         onChange={handleChange}
         id="number"
