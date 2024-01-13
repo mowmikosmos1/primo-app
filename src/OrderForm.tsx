@@ -5,7 +5,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useState } from "react";
-
+import Button from "@mui/material/Button";
 // metry > 0
 // numer zlecenia: przynajmniej 1-6 znaków
 // nazwa klienta: -----
@@ -96,6 +96,13 @@ export const OrderForm = () => {
           <DatePicker label="Wydanie zlecenia" onChange={handleEndDateChange} />
         </DemoContainer>
       </LocalizationProvider>
+
+      <Button id="cancel" variant="contained" color="primary">
+        Anuluj
+      </Button>
+      <Button id="add" variant="contained" color="primary">
+        Dodaj
+      </Button>
     </Box>
   );
 };

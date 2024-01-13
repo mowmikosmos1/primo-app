@@ -25,9 +25,14 @@ export const Clock = () => {
   return (
     <>
       <div id="dateDisplay">
-        Data : {currentDate.toLocaleDateString()} {dayOfWeek}
+        <b>
+          Data : {currentDate.toLocaleDateString()}
+          <br></br> {dayOfWeek.toUpperCase()}
+        </b>
       </div>
-      <div id="timeDisplay">Czas : {currentDate.toLocaleTimeString()} </div>
+      <div id="timeDisplay">
+        <b>Czas : {currentDate.toLocaleTimeString()}</b>{" "}
+      </div>
     </>
   );
 };

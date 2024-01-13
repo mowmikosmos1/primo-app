@@ -3,7 +3,7 @@ import "./App.scss";
 import { OrdersList } from "./OrdersList";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
-import logo from "./primologo1.jpg";
+import logo from "./primologo1.png";
 import { InboxList } from "./InboxList";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { teal, red } from "@mui/material/colors";
@@ -179,7 +179,9 @@ function App() {
           <img src={logo} alt="logo1" />
         </div>
 
-        <div className="UserPanel">Zalogowano : admin</div>
+        <div className="UserPanel">
+          <b>Zalogowano: admin</b>
+        </div>
         <div className="LogOut">
           <ThemeProvider theme={theme}>
             <Button variant="contained" color="primary">
@@ -187,6 +189,7 @@ function App() {
             </Button>
           </ThemeProvider>
         </div>
+
         <Clock />
       </header>
 
@@ -251,8 +254,9 @@ function App() {
           </div>
 
           <div className="tables">
-            <p>PILNE ZLECENIA / KRÓTKI CZAS DO WYDANIA</p>
-
+            <Paper>
+              <p>PILNE ZLECENIA / KRÓTKI CZAS DO WYDANIA</p>
+            </Paper>
             <ThemeProvider theme={theme}>
               {currentPage}
               <OrdersList orders={urgentOrders} urgent />

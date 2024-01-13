@@ -32,7 +32,7 @@ export const OrdersList = ({
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
-          <TableRow sx={{ backgroundColor: urgent ? "red" : "white" }}>
+          <TableRow sx={{ backgroundColor: urgent ? "#b71c1c" : "white" }}>
             <TableCell>Nr. Zlecenia : </TableCell>
             <TableCell align="right">Nazwa klienta : </TableCell>
             <TableCell align="right">metry2</TableCell>
@@ -47,7 +47,7 @@ export const OrdersList = ({
               key={order.id}
               sx={{
                 "&:last-child td, &:last-child th": { border: 0 },
-                backgroundColor: urgent ? "red" : "white",
+                backgroundColor: urgent ? "#b71c1c" : "white",
               }}
             >
               <TableCell component="th" scope="row">
