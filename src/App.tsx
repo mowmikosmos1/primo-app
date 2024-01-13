@@ -6,7 +6,10 @@ import Button from "@mui/material/Button";
 import logo from "./primologo1.jpg";
 import { InboxList } from "./InboxList";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { teal } from "@mui/material/colors";
+import { teal, red } from "@mui/material/colors";
+import { Clock } from "./Clock";
+import { OrderForm } from "./OrderForm";
+import { Paper } from "@mui/material";
 
 export type OrderType = {
   id: string;
@@ -158,7 +161,7 @@ const inboxMailTitles: string[] = [
 const theme = createTheme({
   palette: {
     primary: teal,
-    secondary: teal,
+    secondary: red,
   },
 });
 
@@ -184,9 +187,7 @@ function App() {
             </Button>
           </ThemeProvider>
         </div>
-
-        <div id="dateDisplay">Data :</div>
-        <div id="timeDisplay">Czas : </div>
+        <Clock />
       </header>
 
       <main className="container">
@@ -250,10 +251,18 @@ function App() {
           </div>
 
           <div className="tables">
-            {currentPage}
-            <OrdersList orders={urgentOrders} />
+            <p>PILNE ZLECENIA / KRÓTKI CZAS DO WYDANIA</p>
+
+            <ThemeProvider theme={theme}>
+              {currentPage}
+              <OrdersList orders={urgentOrders} urgent />
+            </ThemeProvider>
             {currentPage === "all" && <OrdersList orders={orders} />}
-            {currentPage === "add" && <div>Dodaj nowe zlecenie</div>}
+            {currentPage === "add" && (
+              <Paper>
+                <OrderForm></OrderForm>
+              </Paper>
+            )}
             {currentPage === "add-info" && <div>Dodaj nowa informacje</div>}
           </div>
         </ThemeProvider>
