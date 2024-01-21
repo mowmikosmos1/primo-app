@@ -14,7 +14,7 @@ import Button from "@mui/material/Button";
 
 type NewOrderType = {
   clientName: string;
-  orderNumber: number | null;
+  orderNumber: string;
   startDate: Date | null;
   endDate: Date | null;
   size: number | null;
@@ -22,7 +22,7 @@ type NewOrderType = {
 
 const defaultOrder = {
   clientName: "",
-  orderNumber: null,
+  orderNumber: "",
   startDate: null,
   endDate: null,
   size: null,
@@ -30,8 +30,28 @@ const defaultOrder = {
 
 export const OrderForm = () => {
   const [order, setOrder] = useState<NewOrderType>(defaultOrder);
+  const [sizeError, setSizeError] = useState<boolean>(false);
+  const [orderNumberError, setOrderNumberError] = useState<boolean>(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // sprawdz czy ilość metrow jest > 0
+    if (e.target.name === "size" && (order.size === null || order.size <= 0)) {
+      setSizeError(true);
+    } else if (e.target.name === "size") {
+      setSizeError(false);
+    }
+
+    // sprawdz czy numer klienta ma 1-6 znaków
+    if (
+      e.target.name === "orderNumber" &&
+      order.orderNumber.length >= 1 &&
+      order.orderNumber.length <= 6
+    ) {
+      setOrderNumberError(false);
+    } else if (e.target.name === "ordeNumber") {
+      setOrderNumberError(true);
+    }
+
     setOrder((prev) => {
       console.log(e.target);
       console.log(e.target.value);
@@ -75,47 +95,56 @@ export const OrderForm = () => {
         <p>Metry/powierzchnia: {order.size}</p>
       </div>
       <form onSubmit={handleSubmit}>
-        <TextField
-          onChange={handleChange}
-          id="number"
-          label="Podaj numer zlecenia"
-          variant="outlined"
-          name="orderNumber"
-        />
-        <TextField
-          id="client"
-          label="Podaj nazwę klienta"
-          variant="outlined"
-          name="clientName"
-          onChange={handleChange}
-        />
-        <TextField
-          id="size"
-          label="Podaj metry2"
-          variant="outlined"
-          name="size"
-          onChange={handleChange}
-        />
-        <p>Przyjęto: {order.startDate?.toString()}</p>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DemoContainer components={["DatePicker"]}>
-            <DatePicker
-              label="Przyjęcie zlecenia"
-              onChange={handleStartDateChange}
-            />
-            <p>Wydać dnia: {order.endDate?.toString()}</p>
-            <DatePicker
-              label="Wydanie zlecenia"
-              onChange={handleEndDateChange}
-            />
-          </DemoContainer>
-        </LocalizationProvider>
-        <Button type="button" id="cancel" variant="contained" color="primary">
-          Anuluj
-        </Button>
-        <Button type="submit" id="add" variant="contained" color="primary">
-          Dodaj
-        </Button>
+        <div id="inputs">
+          <TextField
+            onChange={handleChange}
+            id="number"
+            label="Podaj numer zlecenia"
+            variant="outlined"
+            name="orderNumber"
+          />
+          <TextField
+            id="client"
+            label="Podaj nazwę klienta"
+            variant="outlined"
+            name="clientName"
+            onChange={handleChange}
+          />
+          <TextField
+            id="size"
+            label="Podaj metry2"
+            variant="outlined"
+            name="size"
+            onChange={handleChange}
+            error={sizeError}
+            type="number"
+          />
+        </div>
+
+        <div id="inputs1">
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DemoContainer components={["DatePicker"]}>
+              <p>Przyjęto: {order.startDate?.toString()}</p>
+              <DatePicker
+                label="Przyjęcie zlecenia"
+                onChange={handleStartDateChange}
+              />
+              <p>Wydać dnia: {order.endDate?.toString()}</p>
+              <DatePicker
+                label="Wydanie zlecenia"
+                onChange={handleEndDateChange}
+              />
+            </DemoContainer>
+          </LocalizationProvider>
+        </div>
+        <div id="buttonsForm">
+          <Button type="button" id="cancel" variant="contained" color="primary">
+            Anuluj
+          </Button>
+          <Button type="submit" id="add" variant="contained" color="primary">
+            Dodaj
+          </Button>
+        </div>
       </form>
     </Box>
   );

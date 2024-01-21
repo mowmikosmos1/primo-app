@@ -60,17 +60,33 @@ header .logo img {
     row-gap: 20px;
   }
   .tables p {
-    padding: 0%;
+    padding: 5px;
     display: flex;
     justify-content:center;
   }
+
 }
-.Typography{
-  padding: 10px
-}
+
 
 #orderBox{
   display: flex;
   
   justify-content: space-around;
+}
+
+#inputs{
+  display: flex;
+  justify-content: space-around;
+}
+
+#inputs1{
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+}
+#buttonsForm{
+  display: flex;
+  justify-content: center;
+  padding: 10px 20px 20px 20px;
+  gap: 10%;
 }
