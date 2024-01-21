@@ -47,27 +47,32 @@ export const InfoForm = () => {
         <b>Dodaj informację</b>
       </Typography>
       <form onSubmit={handleSubmit}>
-        <TextField
-          onChange={handleChange}
-          id="topic"
-          label="Dodaj temat informacji"
-          variant="outlined"
-          name="topic"
-        />
-        <TextField
-          onChange={handleChange}
-          id="text"
-          label="Dodaj treść informacji"
-          variant="outlined"
-          name="text"
-          multiline
-        />
-        <Button type="button" id="cancel" variant="contained" color="primary">
-          Anuluj
-        </Button>
-        <Button type="submit" id="add" variant="contained" color="primary">
-          Dodaj
-        </Button>
+        <div id="inputsInfo">
+          <TextField
+            onChange={handleChange}
+            id="topic"
+            label="Dodaj temat informacji"
+            variant="outlined"
+            name="topic"
+          />
+
+          <TextField
+            onChange={handleChange}
+            id="text"
+            label="Dodaj treść informacji"
+            variant="outlined"
+            name="text"
+            multiline
+          />
+        </div>
+        <div id="infoButtons">
+          <Button type="button" id="cancel" variant="contained" color="primary">
+            Anuluj
+          </Button>
+          <Button type="submit" id="add" variant="contained" color="primary">
+            Dodaj
+          </Button>
+        </div>
       </form>
     </Box>
   );

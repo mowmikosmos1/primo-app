@@ -258,6 +258,7 @@ function App() {
             <Paper>
               <p>PILNE ZLECENIA / KRÓTKI CZAS DO WYDANIA</p>
             </Paper>
+
             <ThemeProvider theme={theme}>
               <OrdersList orders={urgentOrders} urgent />
             </ThemeProvider>
