@@ -10,6 +10,7 @@ import { teal, red } from "@mui/material/colors";
 import { Clock } from "./Clock";
 import { OrderForm } from "./OrderForm";
 import { Paper } from "@mui/material";
+import { InfoForm } from "./InfoForm";
 
 export type OrderType = {
   id: string;
@@ -258,16 +259,19 @@ function App() {
               <p>PILNE ZLECENIA / KRÓTKI CZAS DO WYDANIA</p>
             </Paper>
             <ThemeProvider theme={theme}>
-              {currentPage}
               <OrdersList orders={urgentOrders} urgent />
             </ThemeProvider>
             {currentPage === "all" && <OrdersList orders={orders} />}
             {currentPage === "add" && (
               <Paper>
-                <OrderForm></OrderForm>
+                <OrderForm />
               </Paper>
             )}
-            {currentPage === "add-info" && <div>Dodaj nowa informacje</div>}
+            {currentPage === "add-info" && (
+              <Paper>
+                <InfoForm />
+              </Paper>
+            )}
           </div>
         </ThemeProvider>
       </main>

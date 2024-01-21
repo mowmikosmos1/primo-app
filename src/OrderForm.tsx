@@ -58,53 +58,65 @@ export const OrderForm = () => {
     });
   };
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log("Saving data in DB");
+    console.log(order);
+  };
+
   return (
     <Box>
       <Typography>
         <b>Nowe zlecenie</b>
       </Typography>
-      <p>Numer: {order.orderNumber}</p>
-      <p>Klient: {order.clientName}</p>
-      <p>Metry/powierzchnia: {order.size}</p>
-      <p>Przyjęto: {order.startDate?.toString()}</p>
-      <p>Wydać dnia: {order.endDate?.toString()}</p>
-      <TextField
-        onChange={handleChange}
-        id="number"
-        label="Numer Zlecenia"
-        variant="outlined"
-        name="orderNumber"
-      />
-      <TextField
-        id="client"
-        label="Nazwa klienta"
-        variant="outlined"
-        name="clientName"
-        onChange={handleChange}
-      />
-      <TextField
-        id="size"
-        label="Metry2"
-        variant="outlined"
-        name="size"
-        onChange={handleChange}
-      />
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DemoContainer components={["DatePicker"]}>
-          <DatePicker
-            label="Przyjęcie zlecenia"
-            onChange={handleStartDateChange}
-          />
-          <DatePicker label="Wydanie zlecenia" onChange={handleEndDateChange} />
-        </DemoContainer>
-      </LocalizationProvider>
-
-      <Button id="cancel" variant="contained" color="primary">
-        Anuluj
-      </Button>
-      <Button id="add" variant="contained" color="primary">
-        Dodaj
-      </Button>
+      <div id="orderBox">
+        <p>Numer zlecenia: {order.orderNumber}</p>
+        <p>Nazwa klienta: {order.clientName}</p>
+        <p>Metry/powierzchnia: {order.size}</p>
+      </div>
+      <form onSubmit={handleSubmit}>
+        <TextField
+          onChange={handleChange}
+          id="number"
+          label="Podaj numer zlecenia"
+          variant="outlined"
+          name="orderNumber"
+        />
+        <TextField
+          id="client"
+          label="Podaj nazwę klienta"
+          variant="outlined"
+          name="clientName"
+          onChange={handleChange}
+        />
+        <TextField
+          id="size"
+          label="Podaj metry2"
+          variant="outlined"
+          name="size"
+          onChange={handleChange}
+        />
+        <p>Przyjęto: {order.startDate?.toString()}</p>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DemoContainer components={["DatePicker"]}>
+            <DatePicker
+              label="Przyjęcie zlecenia"
+              onChange={handleStartDateChange}
+            />
+            <p>Wydać dnia: {order.endDate?.toString()}</p>
+            <DatePicker
+              label="Wydanie zlecenia"
+              onChange={handleEndDateChange}
+            />
+          </DemoContainer>
+        </LocalizationProvider>
+        <Button type="button" id="cancel" variant="contained" color="primary">
+          Anuluj
+        </Button>
+        <Button type="submit" id="add" variant="contained" color="primary">
+          Dodaj
+        </Button>
+      </form>
     </Box>
   );
 };
