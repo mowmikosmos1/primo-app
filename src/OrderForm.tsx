@@ -6,6 +6,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useState } from "react";
 import Button from "@mui/material/Button";
+import dayjs from "dayjs";
 // metry > 0
 // numer zlecenia: przynajmniej 1-6 znaków
 // nazwa klienta: -----
@@ -15,8 +16,8 @@ import Button from "@mui/material/Button";
 type NewOrderType = {
   clientName: string;
   orderNumber: string;
-  startDate: Date | null;
-  endDate: Date | null;
+  startDate: dayjs.Dayjs | null;
+  endDate: dayjs.Dayjs | null;
   size: number | null;
 };
 
@@ -32,6 +33,7 @@ export const OrderForm = () => {
   const [order, setOrder] = useState<NewOrderType>(defaultOrder);
   const [sizeError, setSizeError] = useState<boolean>(false);
   const [orderNumberError, setOrderNumberError] = useState<boolean>(false);
+  // const [dateError, setDateError] = useState<boolean>(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // sprawdz czy ilość metrow jest > 0
@@ -52,6 +54,18 @@ export const OrderForm = () => {
       setOrderNumberError(true);
     }
 
+    // data: wydanie zlecenia > przyjęcie zlecenia
+    // if (
+    //   e.target.name in ["startDate", "endDate"] &&
+    //   order.startDate !== null &&
+    //   order.endDate !== null &&
+    //   order.endDate > order.startDate
+    // ) {
+    //   setDateError(true);
+    // } else if (e.target.name === "size") {
+    //   setDateError(false);
+    // }
+
     setOrder((prev) => {
       console.log(e.target);
       console.log(e.target.value);
@@ -60,16 +74,31 @@ export const OrderForm = () => {
     });
   };
 
-  const handleStartDateChange = (value: Date | null) => {
+  const handleStartDateChange = (value: dayjs.Dayjs | null) => {
     console.log(value);
 
-    setOrder((prev) => {
-      const updatedOrder = { ...prev, startDate: value };
-      return updatedOrder;
-    });
+    if (order.endDate === null && value !== null) {
+      // wydanie zlecenia, przyjecie + 4 tygodnie
+
+      console.log("start");
+      console.log("start");
+      console.log("start");
+      console.log("start");
+      console.log("start+");
+      console.log("start+");
+      console.log("start+");
+
+      const end = value.add(1, "month");
+      setOrder((prev) => ({ ...prev, endDate: end }));
+    } else {
+      setOrder((prev) => {
+        const updatedOrder = { ...prev, startDate: value };
+        return updatedOrder;
+      });
+    }
   };
 
-  const handleEndDateChange = (value: Date | null) => {
+  const handleEndDateChange = (value: dayjs.Dayjs | null) => {
     console.log(value);
 
     setOrder((prev) => {
@@ -128,11 +157,17 @@ export const OrderForm = () => {
               <DatePicker
                 label="Przyjęcie zlecenia"
                 onChange={handleStartDateChange}
+                name="startDate"
+                maxDate={order.endDate ?? undefined}
+                value={order.startDate}
               />
               <p>Wydać dnia: {order.endDate?.toString()}</p>
               <DatePicker
                 label="Wydanie zlecenia"
                 onChange={handleEndDateChange}
+                name="endDate"
+                minDate={order.startDate ?? undefined}
+                value={order.endDate}
               />
             </DemoContainer>
           </LocalizationProvider>
