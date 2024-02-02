@@ -45,16 +45,26 @@ function App() {
       const ordersRef = collection(db, "Orders");
       const querySnapshot = await getDocs(ordersRef);
 
-      const orders = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
+      const orders = querySnapshot.docs.map(
+        (doc) =>
+          ({
+            id: doc.id,
+            ...doc.data(),
+          } as OrderType)
+      );
+      const ordersFormated = orders.map((order) => ({
+        ...order,
+        // @ts-ignore
+        startDate: order.startDate.toDate(),
+        // @ts-ignore
+        endDate: order.endDate.toDate(),
       }));
 
-      console.log("OOOORDERS", orders);
-      return orders;
+      setOrders(ordersFormated);
+      return ordersFormated;
     };
 
-    getAllOrders();
+    const ordersData = getAllOrders();
   }, []);
   return (
     <div className="App">

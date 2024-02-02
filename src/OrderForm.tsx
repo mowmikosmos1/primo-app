@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Alert, Box, Typography } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -6,7 +6,10 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "./Firebase";
+import { Timestamp } from "firebase/firestore";
 // metry > 0
 // numer zlecenia: przynajmniej 1-6 znaków
 // nazwa klienta: -----
@@ -33,7 +36,14 @@ export const OrderForm = () => {
   const [order, setOrder] = useState<NewOrderType>(defaultOrder);
   const [sizeError, setSizeError] = useState<boolean>(false);
   const [orderNumberError, setOrderNumberError] = useState<boolean>(false);
-  // const [dateError, setDateError] = useState<boolean>(false);
+  const [startDateError, setStartDateError] = useState<boolean>(false);
+  const [endDateError, setEndDateError] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (order.endDate !== null) {
+      setEndDateError(false);
+    }
+  }, [order]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // sprawdz czy ilość metrow jest > 0
@@ -77,19 +87,15 @@ export const OrderForm = () => {
   const handleStartDateChange = (value: dayjs.Dayjs | null) => {
     console.log(value);
 
+    if (value !== null) {
+      setStartDateError(false);
+    }
+
     if (order.endDate === null && value !== null) {
       // wydanie zlecenia, przyjecie + 4 tygodnie
 
-      console.log("start");
-      console.log("start");
-      console.log("start");
-      console.log("start");
-      console.log("start+");
-      console.log("start+");
-      console.log("start+");
-
       const end = value.add(1, "month");
-      setOrder((prev) => ({ ...prev, endDate: end }));
+      setOrder((prev) => ({ ...prev, startDate: value, endDate: end }));
     } else {
       setOrder((prev) => {
         const updatedOrder = { ...prev, startDate: value };
@@ -101,6 +107,10 @@ export const OrderForm = () => {
   const handleEndDateChange = (value: dayjs.Dayjs | null) => {
     console.log(value);
 
+    if (value !== null) {
+      setEndDateError(false);
+    }
+
     setOrder((prev) => {
       const updatedOrder = { ...prev, endDate: value };
       return updatedOrder;
@@ -111,6 +121,31 @@ export const OrderForm = () => {
     e.preventDefault();
     console.log("Saving data in DB");
     console.log(order);
+
+    if (order.startDate === null) {
+      setStartDateError(true);
+    }
+    if (order.endDate === null) {
+      setEndDateError(true);
+    }
+    if (order.startDate === null || order.endDate === null) {
+      return;
+    }
+
+    try {
+      const ordersRef = collection(db, "Orders");
+      if (order.startDate !== null || order.endDate !== null) {
+        addDoc(ordersRef, {
+          ...order,
+          startDate: Timestamp.fromDate(
+            (order.startDate as dayjs.Dayjs).toDate()
+          ),
+          endDate: Timestamp.fromDate((order.endDate as dayjs.Dayjs).toDate()),
+        });
+      }
+    } catch (e) {
+      console.log("Error", e);
+    }
   };
 
   return (
@@ -154,6 +189,7 @@ export const OrderForm = () => {
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DemoContainer components={["DatePicker"]}>
               <p>Przyjęto: {order.startDate?.toString()}</p>
+              {startDateError && <Alert severity="error">Podaj datę</Alert>}
               <DatePicker
                 label="Przyjęcie zlecenia"
                 onChange={handleStartDateChange}
@@ -162,6 +198,7 @@ export const OrderForm = () => {
                 value={order.startDate}
               />
               <p>Wydać dnia: {order.endDate?.toString()}</p>
+              {endDateError && <Alert severity="error">Podaj datę</Alert>}
               <DatePicker
                 label="Wydanie zlecenia"
                 onChange={handleEndDateChange}
