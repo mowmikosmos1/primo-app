@@ -6,6 +6,10 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useState } from "react";
 import Button from "@mui/material/Button";
+import dayjs, { Dayjs } from "dayjs";
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "./Firebase";
+import { Timestamp } from "firebase/firestore";
 
 // metry > 0
 // numer zlecenia: przynajmniej 1-6 znaków
@@ -23,10 +27,17 @@ const defaultInfo = {
   text: "",
 };
 
-export const InfoForm = () => {
+export const InfoForm = ({ getAllInfo }: { getAllInfo: () => void }) => {
   const [info, setInfo] = useState<NewInfoType>(defaultInfo);
+  const [topicError, setTopicError] = useState<boolean>(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.name === "topic" && info.topic.length >= 1) {
+      setTopicError(false);
+    } else if (e.target.name === "topic") {
+      setTopicError(true);
+    }
+
     setInfo((prev) => {
       console.log(e.target);
       console.log(e.target.value);
@@ -39,6 +50,20 @@ export const InfoForm = () => {
     e.preventDefault();
     console.log("Saving data in DB");
     console.log(info);
+
+    if (topicError) return;
+
+    try {
+      const infoRef = collection(db, "Information");
+      const now = new Date();
+      addDoc(infoRef, {
+        ...info,
+        created: Timestamp.fromDate(now),
+      });
+      getAllInfo();
+    } catch (e) {
+      console.log("Error", e);
+    }
   };
 
   return (
@@ -54,6 +79,7 @@ export const InfoForm = () => {
             label="Dodaj temat informacji"
             variant="outlined"
             name="topic"
+            error={topicError}
           />
 
           <TextField
@@ -69,7 +95,13 @@ export const InfoForm = () => {
           <Button type="button" id="cancel" variant="contained" color="primary">
             Anuluj
           </Button>
-          <Button type="submit" id="add" variant="contained" color="primary">
+          <Button
+            type="submit"
+            id="add"
+            variant="contained"
+            color="primary"
+            disabled={topicError}
+          >
             Dodaj
           </Button>
         </div>

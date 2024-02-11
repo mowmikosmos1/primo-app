@@ -14,6 +14,14 @@ import { InfoForm } from "./InfoForm";
 import { inboxMailTitles, sampleOrders, urgentOrders } from "./data";
 import { collection, doc, getDocs } from "firebase/firestore";
 import { db } from "./Firebase";
+import { Timestamp } from "firebase/firestore";
+
+// odswiezanie po dodaniu info
+// ekran po dodaniu danych
+// anuluj
+// wyswietlanie zlecen w poprawnyc htabelach
+// login
+// modal do wyswietlania informacji
 
 export type OrderType = {
   id: string;
@@ -23,6 +31,13 @@ export type OrderType = {
   endDate: Date;
   isFinished: boolean;
   size: number;
+};
+
+type InfoType = {
+  id: string;
+  topic: string;
+  text: string;
+  created: Timestamp;
 };
 
 const theme = createTheme({
@@ -38,33 +53,62 @@ function App() {
   // sample orders są przekazane jako default
   // moglibyśmy tez napisać [], jesli lista miałaby być pusta   useState<OrderType[]>([]);
   const [orders, setOrders] = useState<OrderType[]>(sampleOrders);
+  const [information, setInformation] = useState<InfoType[]>([]);
   const [currentPage, setCurrentPage] = useState<currentPageType>("start");
 
+  const getAllOrders = async () => {
+    const ordersRef = collection(db, "Orders");
+    const querySnapshot = await getDocs(ordersRef);
+
+    const orders = querySnapshot.docs.map(
+      (doc) =>
+        ({
+          id: doc.id,
+          ...doc.data(),
+        } as OrderType)
+    );
+    const ordersFormated = orders.map((order) => ({
+      ...order,
+      // @ts-ignore
+      startDate: order.startDate.toDate(),
+      // @ts-ignore
+      endDate: order.endDate.toDate(),
+    }));
+
+    setOrders(ordersFormated);
+    return ordersFormated;
+  };
+
+  const getAllInfo = async () => {
+    const infoRef = collection(db, "Information");
+    const querySnapshot = await getDocs(infoRef);
+
+    const infoList = querySnapshot.docs.map(
+      (doc) =>
+        ({
+          id: doc.id,
+          ...doc.data(),
+        } as InfoType)
+    );
+    console.log("TTTTTTT", infoList);
+    const infoFormated = infoList.map((info) => ({
+      ...info,
+      // @ts-ignore
+      created: info.created.toDate(),
+    }));
+
+    infoFormated.sort((a, b) => {
+      return a.created < b.created ? 1 : -1;
+    });
+
+    // @ts-ignore
+    setInformation(infoFormated);
+    return infoFormated;
+  };
+
   useEffect(() => {
-    const getAllOrders = async () => {
-      const ordersRef = collection(db, "Orders");
-      const querySnapshot = await getDocs(ordersRef);
-
-      const orders = querySnapshot.docs.map(
-        (doc) =>
-          ({
-            id: doc.id,
-            ...doc.data(),
-          } as OrderType)
-      );
-      const ordersFormated = orders.map((order) => ({
-        ...order,
-        // @ts-ignore
-        startDate: order.startDate.toDate(),
-        // @ts-ignore
-        endDate: order.endDate.toDate(),
-      }));
-
-      setOrders(ordersFormated);
-      return ordersFormated;
-    };
-
     const ordersData = getAllOrders();
+    getAllInfo();
   }, []);
   return (
     <div className="App">
@@ -86,7 +130,6 @@ function App() {
 
         <Clock />
       </header>
-
       <main className="container">
         <ThemeProvider theme={theme}>
           <div className="buttons">
@@ -138,15 +181,16 @@ function App() {
                 Dodaj informacje
               </Button>
 
-              <div className="importantInfo">
+              <div className="importantInOrderTypefo">
                 <b>I N F O R M A C J E</b>
                 <div className="insideBox">
-                  <InboxList infoList={inboxMailTitles}></InboxList>
+                  <InboxList
+                    infoList={information.map((info) => info.topic)}
+                  ></InboxList>
                 </div>
               </div>
             </Stack>
           </div>
-
           <div className="tables">
             <Paper>
               <p>PILNE ZLECENIA / KRÓTKI CZAS DO WYDANIA</p>
@@ -163,13 +207,12 @@ function App() {
             )}
             {currentPage === "add-info" && (
               <Paper>
-                <InfoForm />
+                <InfoForm getAllInfo={getAllInfo} />
               </Paper>
             )}
           </div>
         </ThemeProvider>
       </main>
-
       {/* dodanie komponentu Orders list z parametrem orders */}
     </div>
   );
