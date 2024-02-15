@@ -11,7 +11,6 @@ import { Clock } from "./Clock";
 import { OrderForm } from "./OrderForm";
 import { Paper } from "@mui/material";
 import { InfoForm } from "./InfoForm";
-import { inboxMailTitles, sampleOrders } from "./data";
 import { collection, doc, getDocs } from "firebase/firestore";
 import { db } from "./Firebase";
 import { Timestamp } from "firebase/firestore";
@@ -32,6 +31,7 @@ export type OrderType = {
   endDate: Date;
   isFinished: boolean;
   size: number;
+  urgent: boolean;
 };
 
 export type InfoDBType = {
@@ -60,7 +60,7 @@ type currentPageType = "start" | "urgent" | "all" | "add" | "add-info";
 function App() {
   // sample orders są przekazane jako default
   // moglibyśmy tez napisać [], jesli lista miałaby być pusta   useState<OrderType[]>([]);
-  const [orders, setOrders] = useState<OrderType[]>(sampleOrders);
+  const [orders, setOrders] = useState<OrderType[]>([]);
   const [information, setInformation] = useState<InfoType[]>([]);
   const [currentPage, setCurrentPage] = useState<currentPageType>("start");
 
@@ -70,7 +70,7 @@ function App() {
 
   // TODO: dopracowac
   const urgentOrders = orders.filter(
-    (order) => order.endDate <= sevenDaysFromNow
+    (order) => order.endDate <= sevenDaysFromNow || order.urgent
   );
 
   const getAllOrders = async () => {

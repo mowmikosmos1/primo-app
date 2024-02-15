@@ -1,4 +1,10 @@
-import { Alert, Box, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Checkbox,
+  FormControlLabel,
+  Typography,
+} from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -38,6 +44,7 @@ export const OrderForm = () => {
   const [orderNumberError, setOrderNumberError] = useState<boolean>(false);
   const [startDateError, setStartDateError] = useState<boolean>(false);
   const [endDateError, setEndDateError] = useState<boolean>(false);
+  const [checked, setChecked] = useState(false);
 
   useEffect(() => {
     if (order.endDate !== null) {
@@ -141,11 +148,16 @@ export const OrderForm = () => {
             (order.startDate as dayjs.Dayjs).toDate()
           ),
           endDate: Timestamp.fromDate((order.endDate as dayjs.Dayjs).toDate()),
+          urgent: checked,
         });
       }
     } catch (e) {
       console.log("Error", e);
     }
+  };
+
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setChecked(e.target.checked);
   };
 
   return (
@@ -209,6 +221,14 @@ export const OrderForm = () => {
             </DemoContainer>
           </LocalizationProvider>
         </div>
+
+        <FormControlLabel
+          control={
+            <Checkbox checked={checked} onChange={handleCheckboxChange} />
+          }
+          label="Dodaj jako PILNE"
+        />
+
         <div id="buttonsForm">
           <Button type="button" id="cancel" variant="contained" color="primary">
             Anuluj
