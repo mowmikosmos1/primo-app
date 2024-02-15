@@ -11,7 +11,7 @@ import { Clock } from "./Clock";
 import { OrderForm } from "./OrderForm";
 import { Paper } from "@mui/material";
 import { InfoForm } from "./InfoForm";
-import { inboxMailTitles, sampleOrders, urgentOrders } from "./data";
+import { inboxMailTitles, sampleOrders } from "./data";
 import { collection, doc, getDocs } from "firebase/firestore";
 import { db } from "./Firebase";
 import { Timestamp } from "firebase/firestore";
@@ -21,7 +21,8 @@ import { Timestamp } from "firebase/firestore";
 // anuluj
 // wyswietlanie zlecen w poprawnyc htabelach
 // login
-// modal do wyswietlania informacji
+
+// modal do wyswietlania informacji DONE
 
 export type OrderType = {
   id: string;
@@ -33,11 +34,18 @@ export type OrderType = {
   size: number;
 };
 
-type InfoType = {
+export type InfoDBType = {
   id: string;
   topic: string;
   text: string;
   created: Timestamp;
+};
+
+export type InfoType = {
+  id: string;
+  topic: string;
+  text: string;
+  created: Date;
 };
 
 const theme = createTheme({
@@ -55,6 +63,15 @@ function App() {
   const [orders, setOrders] = useState<OrderType[]>(sampleOrders);
   const [information, setInformation] = useState<InfoType[]>([]);
   const [currentPage, setCurrentPage] = useState<currentPageType>("start");
+
+  const today = new Date();
+  const sevenDaysFromNow = new Date();
+  sevenDaysFromNow.setDate(today.getDate() + 7);
+
+  // TODO: dopracowac
+  const urgentOrders = orders.filter(
+    (order) => order.endDate <= sevenDaysFromNow
+  );
 
   const getAllOrders = async () => {
     const ordersRef = collection(db, "Orders");
@@ -184,9 +201,7 @@ function App() {
               <div className="importantInOrderTypefo">
                 <b>I N F O R M A C J E</b>
                 <div className="insideBox">
-                  <InboxList
-                    infoList={information.map((info) => info.topic)}
-                  ></InboxList>
+                  <InboxList infoList={information}></InboxList>
                 </div>
               </div>
             </Stack>
