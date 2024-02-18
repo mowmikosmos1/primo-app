@@ -6,8 +6,8 @@ import ListItemText from "@mui/material/ListItemText";
 import Modal from "@mui/material/Modal";
 import Typography from "@mui/material/Typography";
 import { useState } from "react";
-import { InfoType } from "./App";
 import { info } from "console";
+import { InfoType } from "./types";
 
 const style = {
   position: "absolute" as "absolute",

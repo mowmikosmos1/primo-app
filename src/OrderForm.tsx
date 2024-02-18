@@ -16,30 +16,25 @@ import dayjs, { Dayjs } from "dayjs";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "./Firebase";
 import { Timestamp } from "firebase/firestore";
-// metry > 0
-// numer zlecenia: przynajmniej 1-6 znaków
-// nazwa klienta: -----
-// data: wydanie zlecenia > przyjęcie zlecenia
-// wydanie zlecenia, przyjecie + 4 tygodnie
-
-type NewOrderType = {
-  clientName: string;
-  orderNumber: string;
-  startDate: dayjs.Dayjs | null;
-  endDate: dayjs.Dayjs | null;
-  size: number | null;
-};
+import { addOrder } from "./api";
+import { OrderBaseType, OrderFormated } from "./types";
 
 const defaultOrder = {
   clientName: "",
   orderNumber: "",
-  startDate: null,
-  endDate: null,
-  size: null,
+  startDate: Date(),
+  endDate: Date(),
+  size: 0,
+  isFinished: false,
+} as unknown as OrderNew;
+
+type OrderNew = Omit<OrderBaseType, "urgent"> & {
+  startDate: Date;
+  endDate: Date;
 };
 
 export const OrderForm = () => {
-  const [order, setOrder] = useState<NewOrderType>(defaultOrder);
+  const [order, setOrder] = useState<OrderNew>(defaultOrder);
   const [sizeError, setSizeError] = useState<boolean>(false);
   const [orderNumberError, setOrderNumberError] = useState<boolean>(false);
   const [startDateError, setStartDateError] = useState<boolean>(false);
@@ -54,7 +49,7 @@ export const OrderForm = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // sprawdz czy ilość metrow jest > 0
-    if (e.target.name === "size" && (order.size === null || order.size <= 0)) {
+    if (e.target.name === "size" && parseInt(e.target.value) <= 0) {
       setSizeError(true);
     } else if (e.target.name === "size") {
       setSizeError(false);
@@ -67,33 +62,17 @@ export const OrderForm = () => {
       order.orderNumber.length <= 6
     ) {
       setOrderNumberError(false);
-    } else if (e.target.name === "ordeNumber") {
+    } else if (e.target.name === "orderNumber") {
       setOrderNumberError(true);
     }
 
-    // data: wydanie zlecenia > przyjęcie zlecenia
-    // if (
-    //   e.target.name in ["startDate", "endDate"] &&
-    //   order.startDate !== null &&
-    //   order.endDate !== null &&
-    //   order.endDate > order.startDate
-    // ) {
-    //   setDateError(true);
-    // } else if (e.target.name === "size") {
-    //   setDateError(false);
-    // }
-
     setOrder((prev) => {
-      console.log(e.target);
-      console.log(e.target.value);
       const updatedOrder = { ...prev, [e.target.name]: e.target.value };
       return updatedOrder;
     });
   };
 
   const handleStartDateChange = (value: dayjs.Dayjs | null) => {
-    console.log(value);
-
     if (value !== null) {
       setStartDateError(false);
     }
@@ -102,10 +81,17 @@ export const OrderForm = () => {
       // wydanie zlecenia, przyjecie + 4 tygodnie
 
       const end = value.add(1, "month");
-      setOrder((prev) => ({ ...prev, startDate: value, endDate: end }));
+      setOrder((prev) => ({
+        ...prev,
+        startDate: value.toDate(),
+        endDate: end.toDate(),
+      }));
     } else {
       setOrder((prev) => {
-        const updatedOrder = { ...prev, startDate: value };
+        const updatedOrder = {
+          ...prev,
+          startDate: value?.toDate() || new Date(),
+        };
         return updatedOrder;
       });
     }
@@ -119,12 +105,12 @@ export const OrderForm = () => {
     }
 
     setOrder((prev) => {
-      const updatedOrder = { ...prev, endDate: value };
+      const updatedOrder = { ...prev, endDate: value?.toDate() || new Date() };
       return updatedOrder;
     });
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("Saving data in DB");
     console.log(order);
@@ -139,21 +125,14 @@ export const OrderForm = () => {
       return;
     }
 
-    try {
-      const ordersRef = collection(db, "Orders");
-      if (order.startDate !== null || order.endDate !== null) {
-        addDoc(ordersRef, {
-          ...order,
-          startDate: Timestamp.fromDate(
-            (order.startDate as dayjs.Dayjs).toDate()
-          ),
-          endDate: Timestamp.fromDate((order.endDate as dayjs.Dayjs).toDate()),
-          urgent: checked,
-        });
-      }
-    } catch (e) {
-      console.log("Error", e);
-    }
+    const orderFormated = {
+      ...order,
+      startDate: Timestamp.fromDate(order.startDate) as Timestamp,
+      endDate: Timestamp.fromDate(order.endDate) as Timestamp,
+      urgent: checked,
+    };
+
+    await addOrder(orderFormated as unknown as OrderFormated);
   };
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -206,8 +185,8 @@ export const OrderForm = () => {
                 label="Przyjęcie zlecenia"
                 onChange={handleStartDateChange}
                 name="startDate"
-                maxDate={order.endDate ?? undefined}
-                value={order.startDate}
+                maxDate={dayjs(order.endDate) ?? undefined}
+                value={dayjs(order.startDate)}
               />
               <p>Wydać dnia: {order.endDate?.toString()}</p>
               {endDateError && <Alert severity="error">Podaj datę</Alert>}
@@ -215,8 +194,8 @@ export const OrderForm = () => {
                 label="Wydanie zlecenia"
                 onChange={handleEndDateChange}
                 name="endDate"
-                minDate={order.startDate ?? undefined}
-                value={order.endDate}
+                minDate={dayjs(order.startDate) ?? undefined}
+                value={dayjs(order.endDate)}
               />
             </DemoContainer>
           </LocalizationProvider>

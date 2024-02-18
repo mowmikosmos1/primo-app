@@ -7,18 +7,8 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { OrderType } from "./App";
 import { green, teal, red } from "@mui/material/colors";
-
-export type orderType = {
-  id: string;
-  clientName: string;
-  orderNumber: number;
-  startDate: Date;
-  endDate: Date;
-  isFinished: boolean;
-  size: number;
-};
+import { OrderType } from "./types";
 
 // orders jest parametrem który przekazujemy do OrdersList np: <OrdersList orders={lista} />
 export const OrdersList = ({

@@ -1,26 +1,10 @@
 import { Box, Typography } from "@mui/material";
 import TextField from "@mui/material/TextField";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useState } from "react";
 import Button from "@mui/material/Button";
-import dayjs, { Dayjs } from "dayjs";
-import { collection, addDoc } from "firebase/firestore";
-import { db } from "./Firebase";
 import { Timestamp } from "firebase/firestore";
-
-// metry > 0
-// numer zlecenia: przynajmniej 1-6 znaków
-// nazwa klienta: -----
-// data: wydanie zlecenia > przyjęcie zlecenia
-// wydanie zlecenia, przyjecie + 4 tygodnie
-
-type NewInfoType = {
-  topic: string;
-  text: string;
-};
+import { addInfo } from "./api";
+import { NewInfoType } from "./types";
 
 const defaultInfo = {
   topic: "",
@@ -32,38 +16,36 @@ export const InfoForm = ({ getAllInfo }: { getAllInfo: () => void }) => {
   const [topicError, setTopicError] = useState<boolean>(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.name === "topic" && info.topic.length >= 1) {
-      setTopicError(false);
-    } else if (e.target.name === "topic") {
+    if (e.target.name === "topic" && e.target.value.length < 1) {
       setTopicError(true);
+    } else if (e.target.name === "topic") {
+      setTopicError(false);
     }
 
     setInfo((prev) => {
-      console.log(e.target);
-      console.log(e.target.value);
       const updatedOrder = { ...prev, [e.target.name]: e.target.value };
       return updatedOrder;
     });
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleCancel = () => {
+    setInfo(defaultInfo);
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Saving data in DB");
-    console.log(info);
 
     if (topicError) return;
+    const now = new Date();
 
-    try {
-      const infoRef = collection(db, "Information");
-      const now = new Date();
-      addDoc(infoRef, {
-        ...info,
-        created: Timestamp.fromDate(now),
-      });
-      getAllInfo();
-    } catch (e) {
-      console.log("Error", e);
-    }
+    const infoFormated = {
+      ...info,
+      created: Timestamp.fromDate(now),
+    };
+
+    await addInfo(infoFormated);
+    setInfo(defaultInfo);
+    await getAllInfo();
   };
 
   return (
@@ -92,7 +74,13 @@ export const InfoForm = ({ getAllInfo }: { getAllInfo: () => void }) => {
           />
         </div>
         <div id="infoButtons">
-          <Button type="button" id="cancel" variant="contained" color="primary">
+          <Button
+            type="button"
+            id="cancel"
+            variant="contained"
+            color="primary"
+            onClick={handleCancel}
+          >
             Anuluj
           </Button>
           <Button
